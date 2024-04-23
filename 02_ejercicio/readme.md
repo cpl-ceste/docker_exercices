@@ -12,7 +12,7 @@ Creamos una aplicacion web lavantando una imagen de NGINX.
 
 1) Conectarse a DockerHub desde Docker Desktop y VStudio Code
 
-`$ docker run --name web-site -d -p 8080:80 nginx´
+`$ docker run --name web-site -d -p 8080:80 nginx`
 
 2) Abrir el navegador para ver la aplicacion
 
@@ -26,7 +26,7 @@ Creamos una aplicacion web lavantando una imagen de NGINX.
 
 1) Conectarse a DockerHub desde Docker Desktop y VStudio Code
 
-´$ docker run -dp 8080:80 -v /usr/share/nginx/html nginx´
+`$ docker run -dp 8080:80 -v /usr/share/nginx/html nginx`
 
 2) Inspeccionamos el volumen y vemos que se han mapeado todos los contenidos del directorio del contenedor al volumen en nuestro host. Ver en Docker Desktop o en VStudio Code donde se ha creado el volumen y ver los ficheros. Podemos copiarlos o exportarlos a otro directorio
 
@@ -47,7 +47,7 @@ Creamos una aplicacion web lavantando una imagen de NGINX.
 
 1) Levantamos la aplicacion web mapeando un volumen en la ruta `static-site1` que es un directorio vacio. Creamos primero el directorio `static-site1`
 
-´$ docker run -dp 8080:80 -v ./static-site1:/usr/share/nginx/html nginx´
+`$ docker run -dp 8080:80 -v ./static-site1:/usr/share/nginx/html nginx`
 
 NOTA IMPORTANTE: si le damos por equivocacion el nombre de un dir en el host o en el contenedor que no existen los creara vacios y no dara error. No despistarse, porque a veces nos equivocamos al escribir la rutas y los contenidos mapeados no coinciden con lo que pensamos
 
@@ -57,7 +57,7 @@ NOTA IMPORTANTE: si le damos por equivocacion el nombre de un dir en el host o e
 
 4) Borramos el contenedor y levantamos de nuevo la aplicacion web mapeando un volumen en la ruta `static-site2` que es el directorio con nuestra aplicacion web
 
-´$ docker run -dp 8080:80 -v ./static-site2:/usr/share/nginx/html nginx´
+`$ docker run -dp 8080:80 -v ./static-site2:/usr/share/nginx/html nginx`
 
 3) En los ficheros del contenedor vemos que se ha sobre-escribito el `index.html` por defecto de nginx, con el nuevo `index.html` que viene en el dir `static-site2` de este ejercicio y comprobar en la web que se ha actualizado
 
@@ -73,7 +73,7 @@ NOTA IMPORTANTE: si le damos por equivocacion el nombre de un dir en el host o e
 
 7) Borramos el contenedor y levantamos de nuevo la aplicacion web mapeando un volumen en la ruta `static-site2` que es el directorio con nuestra aplicacion web
 
-´$ docker run -dp 8080:80 -v ./static-site2:/usr/share/nginx/html nginx´
+`$ docker run -dp 8080:80 -v ./static-site2:/usr/share/nginx/html nginx`
 
 8) Entramos en los ficheros del contendor y modificamos el fichero `index.html`. Vemos que el contenido del directorio mapeado del contenedor esta sincronizado con el contenido del dir de nuestro host `static-site2` y los cambios hechos dentro del contenedor se reflejan en el fichero `index.html`del host. los dos directorios estan sincronizados
 
@@ -81,7 +81,7 @@ NOTA IMPORTANTE: si le damos por equivocacion el nombre de un dir en el host o e
 
 10) Para evitar que procesos internos del contenedor modifiquen los ficheros de los volumenes mapeados y por ende los ficheros del host podemos mapear los volumenes en modo `readonly`. Lvantamos de nuevo la aplicacion web mapeando un volumen en modo `readonly`en la ruta `static-site2` que es el directorio con nuestra aplicacion web
 
-´$ docker run -dp 8080:80 -v ./static-site2:/usr/share/nginx/html:ro nginx´
+`$ docker run -dp 8080:80 -v ./static-site2:/usr/share/nginx/html:ro nginx`
 
 11) Entramos en los ficheros del contendor y modificamos el fichero `index.html` vemos que esta en modo readonly y no podemos grabar los cambios.
 
