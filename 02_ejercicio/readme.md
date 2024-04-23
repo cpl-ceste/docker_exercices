@@ -45,7 +45,7 @@ Creamos una aplicacion web lavantando una imagen de NGINX.
 
 Creamos una aplicacion web lavantando una imagen de NGINX.
 
-1) Levantamos la aplicacion web mapeando un volumen en la ruta `static-site1` que es un directorio vacio
+1) Levantamos la aplicacion web mapeando un volumen en la ruta `static-site1` que es un directorio vacio. Creamos primero el directorio `static-site1`
 
 ´$ docker run -dp 8080:80 -v ./static-site1:/usr/share/nginx/html nginx´
 
