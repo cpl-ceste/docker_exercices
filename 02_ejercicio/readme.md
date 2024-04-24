@@ -32,13 +32,31 @@ Creamos una aplicacion web lavantando una imagen de NGINX.
 
 3) En los ficheros del contenedor sobre-escribir el `index.html` por defecto de nginx, con el nuevo `index.html` que viene en el dir `static-site2` de este ejercicio y comprobar en la web que se ha actualizado
 
-4) Borrar el contenedor y vemos que el volumen hay que borrarlo manualmente. En VStudio pueden borrarse todos los volumenes no asociados a ningun contenedor. En DocekrDesktop pueden borrarse y exportarse los volumenes.
+4) Borrar el contenedor y vemos que el volumen hay que borrarlo manualmente. En VStudio pueden borrarse todos los volumenes sin nombre no asociados a ningun contenedor. En DockerDesktop pueden borrarse y exportarse los volumenes.
 
-5) Arrancamos de nuevo el contendor y vemos que se crea otro volumen, los datos han persistido en el volumen anterior pero no estan en el nuevo. Observamos que en este caso la opcion --rm no borra volumenes con nombre
+5) Arrancamos de nuevo el contendor y vemos que se crea otro volumen sin nombre diferente, los datos han persistido en el volumen anterior pero no estan en el nuevo. Observamos que en este caso la opcion --rm no borra volumenes con nombre
 
 `$docker run --rm -dp 8080:80 -v /usr/share/nginx/html nginx`
 
 6) Parar contenedor, vemos que se borra el contenedor pero no el volumen
+
+### Volumenes con nombre
+
+1) Conectarse a DockerHub desde Docker Desktop y VStudio Code
+
+`$ docker run -dp 8080:80 -v my-vol:/usr/share/nginx/html nginx`
+
+2) Inspeccionamos el volumen y vemos que se han mapeado todos los contenidos del directorio del contenedor al volumen en nuestro host. Ver en Docker Desktop o en VStudio Code donde se ha creado el volumen y ver los ficheros. Podemos copiarlos o exportarlos a otro directorio
+
+3) En los ficheros del contenedor sobre-escribir el `index.html` por defecto de nginx, con el nuevo `index.html` que viene en el dir `static-site2` de este ejercicio y comprobar en la web que se ha actualizado
+
+4) Borrar el contenedor y vemos que el volumen hay que borrarlo manualmente. En VStudio pueden borrarse manualmente los volumenes con nombre. En DocekrDesktop pueden borrarse y exportarse los volumenes.
+
+5) Arrancamos de nuevo el contendor y vemos que se utiliza el volumen con nombre, los datos han persistido y la web esta actualizada. Observamos que en este caso la opcion --rm no borra volumenes con nombre
+
+`$docker run --rm -dp 8080:80 -v my-vol:/usr/share/nginx/html nginx`
+
+6) Parar contenedor, vemos que se borra el contenedor pero no el volumen. Hay que borrarli manualmente
 
 
 ### Mapeo de volumenes a directorios especificos del sistema (bind mounts)
@@ -57,7 +75,7 @@ NOTA IMPORTANTE: si le damos por equivocacion el nombre de un dir en el host o e
 
 4) Borramos el contenedor y levantamos de nuevo la aplicacion web mapeando un volumen en la ruta `static-site2` que es el directorio con nuestra aplicacion web
 
-`$ docker run -dp 8080:80 -v ./static-site2:/usr/share/nginx/html nginx`
+`$ docker run -dp 8080:80 -v $(pwd)/static-site2:/usr/share/nginx/html nginx`
 
 3) En los ficheros del contenedor vemos que se ha sobre-escribito el `index.html` por defecto de nginx, con el nuevo `index.html` que viene en el dir `static-site2` de este ejercicio y comprobar en la web que se ha actualizado
 
@@ -73,7 +91,7 @@ NOTA IMPORTANTE: si le damos por equivocacion el nombre de un dir en el host o e
 
 7) Borramos el contenedor y levantamos de nuevo la aplicacion web mapeando un volumen en la ruta `static-site2` que es el directorio con nuestra aplicacion web
 
-`$ docker run -dp 8080:80 -v ./static-site2:/usr/share/nginx/html nginx`
+`$ docker run -dp 8080:80 -v $(pwd)/static-site2:/usr/share/nginx/html nginx`
 
 8) Entramos en los ficheros del contendor y modificamos el fichero `index.html`. Vemos que el contenido del directorio mapeado del contenedor esta sincronizado con el contenido del dir de nuestro host `static-site2` y los cambios hechos dentro del contenedor se reflejan en el fichero `index.html`del host. los dos directorios estan sincronizados
 
@@ -81,7 +99,7 @@ NOTA IMPORTANTE: si le damos por equivocacion el nombre de un dir en el host o e
 
 10) Para evitar que procesos internos del contenedor modifiquen los ficheros de los volumenes mapeados y por ende los ficheros del host podemos mapear los volumenes en modo `readonly`. Lvantamos de nuevo la aplicacion web mapeando un volumen en modo `readonly`en la ruta `static-site2` que es el directorio con nuestra aplicacion web
 
-`$ docker run -dp 8080:80 -v ./static-site2:/usr/share/nginx/html:ro nginx`
+`$ docker run -dp 8080:80 -v $(pwd)/static-site2:/usr/share/nginx/html:ro nginx`
 
 11) Entramos en los ficheros del contendor y modificamos el fichero `index.html` vemos que esta en modo readonly y no podemos grabar los cambios.
 
@@ -94,11 +112,14 @@ En ocasiones el contenedor corre con un usuario que es diferente del usuario del
 Crearemos un contenedor con DBMS de MySQL.
 
 1) Navegamos al dir `mysql` creamos un dir `dbms1`, vemos el usuario propietario y nos vamos a el
+
 `$ mkdir dbms1`
+
 `$ ls -lnd dbms1`
+
 `$ cd dbms1`
 
-2) Corremos un contendor de MySQL con un mapeo de volumen, de forma que los datos de la base de datos se guarden en un dir local `data`. No hace falta que creemos el dir local, lo creara el contenedor cuando haga el mapeo.
+3) Corremos un contendor de MySQL con un mapeo de volumen, de forma que los datos de la base de datos se guarden en un dir local `data`. No hace falta que creemos el dir local, lo creara el contenedor cuando haga el mapeo.
 
 `$ docker run -v $(pwd)/data:/var/lib/mysql -p 3306:3306 --name some-mysql -e MYSQL_ROOT_PASSWORD=1234 -d mysql`
 
@@ -107,7 +128,9 @@ Crearemos un contenedor con DBMS de MySQL.
 4) Creamos otro dir nuevo en el raiz `02_ejercicio/mysql/dbms2` y nos vamos a el.
 
 `$ cd ..`
+
 `$ mkdir dbms2`
+
 `$ cd dbms2`
 
 5) Corremos el contenedor especificando que se ejecute con nuestro UID
@@ -132,6 +155,7 @@ Cuando se crea una red, se tiene un servicio de nombres de dominio para los cont
 
 Cuando levantamos un contenedor y no especificamos en que red se levanta, lo hará en la red default
 Levantaremos con un servidor DBMS de MySQL y otro con un cliente de MySQL.
+
 Nos conectaremos al servidor desde el cliente, como ambos estan en la misma red el cliente puede comunicarse con el 
 
 
@@ -149,7 +173,7 @@ Podemos ver la direccion IP del contenedor con el comando:
 
 - prueba que puedes conectarte con la direccion IP en `<poner la IP>`
 
-`$ docker run -it --network my-net --rm mysql mysql -h <poner la IP> -uroot -p`
+`$ docker run -it --rm mysql mysql -h <poner la IP> -uroot -p`
 
 Una vez conectados ejecutamos algun comando para comprobar su funcionamiento:
 
@@ -161,7 +185,8 @@ Una vez conectados ejecutamos algun comando para comprobar su funcionamiento:
 ### Comunicacion entre contenedores en una red con nombre
 
 Crearemos una red y levantamos un contenedor con un servidor DBMS de MySQL y otro con un cliente de MySQL.
-Nos conectaremos al servidor desde el cliente, como ambos estan en la misma red el cliente puede encontrar nos conectaremos con 
+
+Nos conectaremos al servidor desde el cliente, como ambos estan en la misma red el cliente pueden encontrarse y nos conectaremos a el con un contenedor cliente
 
 1) Creamos una red
 
@@ -171,7 +196,8 @@ Nos conectaremos al servidor desde el cliente, como ambos estan en la misma red 
 
 `$ docker run -v $(pwd)/data:/var/lib/mysql --network=my-net -u 1000:1000 -p 3306:3306 --name some-server -e MYSQL_ROOT_PASSWORD=1234 -d mysql`
 
-3) Vemos las redes que hay en Docker con VStudio Code o Docker Desktop. Vemos la red `my-net` y que el contenedor se ha levantado en ella
+3) Vemos las redes que hay en Docker con VStudio Code o Docker Desktop. Vemos la red `my-net` y que el contenedor se ha levantado en ella.
+
 Puede verse si inspeccionamos la red. La red tiene driver `bridge`.
 
 Podemos ver la direccion IP del contenedor con el comando:
@@ -182,7 +208,7 @@ Podemos ver la direccion IP del contenedor con el comando:
 
 - prueba que puedes conectarte con la direccion IP
 
-`docker run -it --network my-net --rm mysql mysql -hsome-server -uroot -p`
+`docker run -it --network my-net --rm mysql mysql -h <IP> -uroot -p`
 
 - prueba que puedes conectarte con el nombre del contenedor
 
