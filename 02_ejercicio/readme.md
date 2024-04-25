@@ -111,6 +111,8 @@ En ocasiones el contenedor corre con un usuario que es diferente del usuario del
 
 Crearemos un contenedor con DBMS de MySQL.
 
+0) crear dos directorios vacios `dbms1`y dbms2`
+
 1) Navegamos al dir `mysql` creamos un dir `dbms1`, vemos el usuario propietario y nos vamos a el
 
 `$ mkdir dbms1`
