@@ -60,7 +60,8 @@ Puede guardar los datos en una base de datos mysql porque la aplicacion viene pr
 - Primero creamos una red
 `$ docker network create todo-app`
 
-- Luego levantamos un contendro mysql en esa red
+- Luego levantamos un contendor mysql en esa red
+
 `$ docker run -d \
     --name mysql_container \
     --network todo-app --network-alias mysql \
