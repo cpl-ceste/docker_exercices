@@ -12,7 +12,7 @@ Normalmente las aplicaciones se modularizan en diferentes contenedores. En gener
 - Es muy probable que tengas que escalar las APIs y las webs de forma diferente a las bases de datos.
 - Los contenedores separados nos permiten versionar y actualizar versiones de forma aislada.
 - Si bien se puede utilizar un contenedor para la base de datos localmente, es posible que desee utilizar un servicio administrado para la base de datos en producción. Entonces no querremos publicar el motor de base de datos con la aplicación en la misma imagen.
--La ejecución de múltiples procesos en un mismo contenedor requerirá un administrador de procesos (el contenedor solo inicia un proceso), lo que agrega complejidad al inicio/apagado del contenedor.
+- La ejecución de múltiples procesos en un mismo contenedor requerirá un administrador de procesos (el contenedor solo inicia un proceso), lo que agrega complejidad al inicio/apagado del contenedor.
 
 Y hay más razones. Entonces, como en el siguiente diagrama, es mejor ejecutar su aplicación en varios contenedores.
 
