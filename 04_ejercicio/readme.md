@@ -10,8 +10,7 @@ Trabajaremos con una aplicación web que desarrollamos en Docker y la publicarem
 
 ### Publicar imagenes en un registro publico
 
-Crearemos un contenedor con la imagen de la aplicacion welcome-to-docker.
-El codigo de la aplicación web esta disponible en la carpeta `welcome-to-docker` (obtenido de `git clone https://github.com/docker/welcome-to-docker`)
+Crearemos un contenedor con la imagen de la aplicacion web.
 
 0) Navegar al dir `04_ejercicio`. Copiar la carpeta `nginx` del ejercicio anterior donde tenemos nuestra web-app
 
