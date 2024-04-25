@@ -40,6 +40,7 @@ Creamos algunos `todos` en la aplicacion
 2) Paramos el contendor y la modificamos cambiando en el fichero `src/static/js/app.js` la linea 56 como sigue:
 
 `- <p className="text-center">No items yet! Add one above!</p>`
+
 `+ <p className="text-center">You have no todo items yet! Add one above!</p>`
 
 3) Volvemos a ejecutarla para ver los cambios
