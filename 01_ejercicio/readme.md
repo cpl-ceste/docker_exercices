@@ -23,11 +23,17 @@ Creamos un contenedor de Linux, con Ubuntu.
 3) Comprobar que el contenedor corre en VStudio Code y Docker Desktop y que tenemos una imagen que ha bajado del repositorio oficial DockerHub
 
 4) Vemos como funciona un contenedor:
+
 -Entramos en el contenedor, creamos un fichero en /home (copiar uno de /var/log/ por ejemplo).
+
 -Comprobamos que el fichero esta en el contenedor.
+
 -Paramos el contenedor
+
 -Lo rearrancamos y comprobamos si el fichero esta o no en /home
+
 -Paramos y borramos el contenedor.
+
 -Volvemos a arrancarlo desde la imagen oficial y comprobamos si el fichero esta o no en /home
 
 5) Borramos contenedor e imagen
