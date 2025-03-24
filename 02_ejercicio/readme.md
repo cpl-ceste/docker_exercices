@@ -34,11 +34,11 @@ Creamos una aplicacion web lavantando una imagen de NGINX.
 
 4) Borrar el contenedor y vemos que el volumen hay que borrarlo manualmente. En VStudio pueden borrarse todos los volumenes sin nombre no asociados a ningun contenedor. En DockerDesktop pueden borrarse y exportarse los volumenes.
 
-5) Arrancamos de nuevo el contendor y vemos que se crea otro volumen sin nombre diferente, los datos han persistido en el volumen anterior pero no estan en el nuevo. Observamos que en este caso la opcion --rm no borra volumenes con nombre
+5) Arrancamos de nuevo el contendor y vemos que se crea otro volumen sin nombre diferente, los datos han persistido en el volumen anterior pero no estan en el nuevo. Observamos que en este caso la opcion --rm borra volumenes sin nombre (volumenes orfanos)
 
 `$docker run --rm -dp 8080:80 -v /usr/share/nginx/html nginx`
 
-6) Parar contenedor, vemos que se borra el contenedor pero no el volumen
+6) Parar contenedor, vemos que se borra el contenedor y el volumen
 
 ### Volumenes con nombre
 
@@ -50,13 +50,13 @@ Creamos una aplicacion web lavantando una imagen de NGINX.
 
 3) En los ficheros del contenedor sobre-escribir el `index.html` por defecto de nginx, con el nuevo `index.html` que viene en el dir `static-site2` de este ejercicio y comprobar en la web que se ha actualizado
 
-4) Borrar el contenedor y vemos que el volumen hay que borrarlo manualmente. En VStudio pueden borrarse manualmente los volumenes con nombre. En DocekrDesktop pueden borrarse y exportarse los volumenes.
+4) Borrar el contenedor y vemos que el volumen hay que borrarlo manualmente. En VStudio pueden borrarse manualmente los volumenes con nombre. En Docker Desktop pueden borrarse y exportarse los volumenes.
 
 5) Arrancamos de nuevo el contendor y vemos que se utiliza el volumen con nombre, los datos han persistido y la web esta actualizada. Observamos que en este caso la opcion --rm no borra volumenes con nombre
 
 `$docker run --rm -dp 8080:80 -v my-vol:/usr/share/nginx/html nginx`
 
-6) Parar contenedor, vemos que se borra el contenedor pero no el volumen. Hay que borrarli manualmente
+6) Parar contenedor, vemos que se borra el contenedor pero no el volumen. Hay que borrarlo manualmente
 
 
 ### Mapeo de volumenes a directorios especificos del sistema (bind mounts)
@@ -67,7 +67,7 @@ Creamos una aplicacion web lavantando una imagen de NGINX.
 
 `$ docker run -dp 8080:80 -v ./static-site1:/usr/share/nginx/html nginx`
 
-NOTA IMPORTANTE: si le damos por equivocacion el nombre de un dir en el host o en el contenedor que no existen los creara vacios y no dara error. No despistarse, porque a veces nos equivocamos al escribir la rutas y los contenidos mapeados no coinciden con lo que pensamos
+NOTA IMPORTANTE: si le damos por equivocacion el nombre de un dir en el host o en el contenedor que no existen los creara vacios y no dara error. No despistarse, porque a veces nos equivocamos al escribir la rutas y los contenidos mapeados no coinciden con lo que pensamos. El comando `mount` no crea automaticamente estos directorios y por seguridad simplemente da un error.
 
 2) en este caso vemos que no hay volumenes en DOCKER. Inspeccionamos el volumen y vemos que no se han mapeado todos los contenidos del directorio del contenedor al volumen en nuestro host. 
 
@@ -89,7 +89,7 @@ NOTA IMPORTANTE: si le damos por equivocacion el nombre de un dir en el host o e
 
 6) Borramos el contenedor
 
-7) Borramos el contenedor y levantamos de nuevo la aplicacion web mapeando un volumen en la ruta `static-site2` que es el directorio con nuestra aplicacion web
+7) Levantamos de nuevo la aplicacion web mapeando un volumen en la ruta `static-site2` que es el directorio con nuestra aplicacion web
 
 `$ docker run -dp 8080:80 -v $(pwd)/static-site2:/usr/share/nginx/html nginx`
 
@@ -97,7 +97,7 @@ NOTA IMPORTANTE: si le damos por equivocacion el nombre de un dir en el host o e
 
 9) Borramos el contenedor
 
-10) Para evitar que procesos internos del contenedor modifiquen los ficheros de los volumenes mapeados y por ende los ficheros del host podemos mapear los volumenes en modo `readonly`. Lvantamos de nuevo la aplicacion web mapeando un volumen en modo `readonly`en la ruta `static-site2` que es el directorio con nuestra aplicacion web
+10) Para evitar que procesos internos del contenedor modifiquen los ficheros de los volumenes mapeados y por ende los ficheros del host podemos mapear los volumenes en modo `readonly`. Levantamos de nuevo la aplicacion web mapeando un volumen en modo `readonly`en la ruta `static-site2` que es el directorio con nuestra aplicacion web
 
 `$ docker run -dp 8080:80 -v $(pwd)/static-site2:/usr/share/nginx/html:ro nginx`
 
@@ -111,7 +111,7 @@ En ocasiones el contenedor corre con un usuario que es diferente del usuario del
 
 Crearemos un contenedor con DBMS de MySQL.
 
-0) crear dos directorios vacios `dbms1`y `dbms2`
+0) Crear un directorio `mysql`y en el, otros dos directorios vacios `dbms1`y `dbms2`
 
 1) Navegamos al dir `mysql` creamos un dir `dbms1`, vemos el usuario propietario y nos vamos a el
 
