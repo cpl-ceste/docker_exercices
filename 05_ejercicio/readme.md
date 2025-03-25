@@ -14,7 +14,7 @@ Normalmente las aplicaciones se modularizan en diferentes contenedores. En gener
 - Si bien se puede utilizar un contenedor para la base de datos localmente, es posible que desee utilizar un servicio administrado para la base de datos en producción. Entonces no querremos publicar el motor de base de datos con la aplicación en la misma imagen.
 - La ejecución de múltiples procesos en un mismo contenedor requerirá un administrador de procesos (el contenedor solo inicia un proceso), lo que agrega complejidad al inicio/apagado del contenedor.
 
-Y hay más razones. Entonces, como en el siguiente diagrama, es mejor ejecutar su aplicación en varios contenedores.
+Y hay más razones. Entonces, es mejor ejecutar una aplicación que tiene diferentes componentes en varios contenedores, uno para cada componente.
 
 Para levantar una aplicación con multiples contenedores podemos ejecutarlos individualmente y conectarlos o utilizar Docker Compose.
 
@@ -22,7 +22,7 @@ Para levantar una aplicación con multiples contenedores podemos ejecutarlos ind
 
 Tenemos una aplicacion web que se ejecuta en node y tiene una configuracion interna en la que si queremos puede conectarse a una base de datos.
 
-![image](https://docs.docker.com/get-started/images/multi-container.webp?w=350h=250)
+![image]https://docs.docker.com/get-started/workshop/images/multi-container.webp?w=350h=250)
 
 Ejecutaremos primero a aplicacion sola y la ejecutaremos conectandola a otro contenedor MySQL
 
