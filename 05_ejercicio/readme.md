@@ -22,7 +22,7 @@ Para levantar una aplicación con multiples contenedores podemos ejecutarlos ind
 
 Tenemos una aplicacion web que se ejecuta en node y tiene una configuracion interna en la que si queremos puede conectarse a una base de datos.
 
-![image]https://docs.docker.com/get-started/workshop/images/multi-container.webp?w=350h=250)
+![image](https://docs.docker.com/get-started/workshop/images/multi-container.webp?w=350h=250)
 
 Ejecutaremos primero a aplicacion sola y la ejecutaremos conectandola a otro contenedor MySQL
 
