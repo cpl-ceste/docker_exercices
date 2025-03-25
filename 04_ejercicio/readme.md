@@ -15,6 +15,7 @@ Crearemos un contenedor con la imagen de la aplicacion web.
 0) Navegar al dir `04_ejercicio`. Copiar la carpeta `nginx` del ejercicio anterior donde tenemos nuestra web-app
 
 `$ cp -r ../03_ejercicio/nginx ./nginx`
+
 `$ cd nginx`
 
 1) Desde el dir `nginx` construimos una imagen con nuestra aplicacion si no tenemos ninguna. Examinamos el `Dockerfile` y vemos que se copiaran en la nueva imagen los ficheros fuente y de configuracion que hemos creado para nuestra aplicación.
@@ -38,14 +39,16 @@ Notese que lo arrancamos en background y mapeamos los puertos con el flag `-dp` 
 `$ docker tag image_name:tag USER_NAME/new_image_name:tag`
 
 En nuestro caso la imagen local es `my-web-app:latest` podemos publicarla como `web-app:v0`.
-La etquetamos y la publicamos sustituyendo ÙSERNAME`por nuestro nombre de usuario en DockerHub:
+La etiquetamos y la publicamos sustituyendo `USERNAME`por nuestro nombre de usuario en DockerHub:
 
 `$ docker tag my-web-app:latest USER_NAME/web-app:v0`
+
 `$ docker push USER_NAME/web-app:v0`
 
 8) Comprobamos que en DockerHub se ha creado un nuevo repositorio de imagenes en nuestro usuario y tenemos una imagen en el que es la aplicacion en su version v0. Publica ahora una version latest y comprueba como puedes recoger en el repo diferentes versiones de las imagenes de tu aplicacion
 
 `$ docker tag my-web-app:latest USER_NAME/web-app:latest`
+
 `$ docker push USER_NAME/web-app:latest`
 
 9) Ejecuta un contendor de otro compañero para ver la aplicacion web que ha publicado
@@ -57,7 +60,7 @@ La etquetamos y la publicamos sustituyendo ÙSERNAME`por nuestro nombre de usuar
 
 ### Levantar un registro privado
 
-Ademas de utilizar el registro publico de DockerHub pordemos tener un registro privado, que desplegamos en una maquina y administramos nosotros mismos para nuestra organizacion.
+Ademas de utilizar el registro publico de DockerHub podemos tener un registro privado, que desplegamos en una maquina y administramos nosotros mismos para nuestra organizacion.
 
 Levantaremos un registro en nuestra maquina `localhost` y podremos acceder a el para descargar y publicar imagenes.
 
@@ -74,11 +77,13 @@ Levantaremos un registro en nuestra maquina `localhost` y podremos acceder a el 
 4) Publicamos nuestra imagen en nuestro registro privado:
 
 `$ docker tag my-web-app:latest localhost:5000/web-app:latest`
+
 `$ docker push localhost:5000/web-app:latest`
 
 5) Comprobamos que hay un nuevo repositorio y listamos las imagenes de ese repositorio
 
 `$ curl -X GET http://localhost:5000/v2/_catalog`
+
 `$ docker image ls localhost:5000/web-app`
 
 6) Paramos el contenedor del registro y podemos borrar la imagen `registry`
@@ -98,6 +103,7 @@ Para ello hemos levantado un registro en una maquina en Amazon a la que podemos 
 4) Publicamos nuestra imagen en nuestro registro privado, poner como nombre de la imagen vuestro nombre de usuario en minusculas `user`:
 
 `$ docker tag my-web-app:latest DIRECCION_IP:5000/user/web-app:latest`
+
 `$ docker push DIRECCION_IP:5000/user/web-app:latest`
 
 5) Listamos los repositorios del registro tras haber subido nuestra imagen:
