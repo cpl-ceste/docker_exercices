@@ -20,13 +20,13 @@ Para levantar una aplicación con multiples contenedores podemos ejecutarlos ind
 
 ### Ejecutar una aplicacion web con base de datos
 
-Tenemos una aplicacion web que se ejecuta en node y tiene una configuracion interna en la que si queremos puede conectarse a una base de datos.
+Tenemos una aplicacion web que se ejecuta en Node.js y tiene una configuracion interna en la que si queremos puede conectarse a una base de datos.
 
 ![image](https://docs.docker.com/get-started/workshop/images/multi-container.webp?w=350h=250)
 
-Ejecutaremos primero a aplicacion sola y la ejecutaremos conectandola a otro contenedor MySQL
+Ejecutaremos primero a aplicacion sola y luego, la ejecutaremos conectandola a otro contenedor MySQL
 
-1) Navegamos hasta el dir `/app` y ejecutamos un contenedor con node en el que mapeamos nuestro volumen con la aplicacion web y la construimos con `yarn`
+1) Navegamos hasta el dir `/app` y ejecutamos un contenedor con Node.js en el que mapeamos nuestro volumen con la aplicacion web y la construimos con `yarn`
 
 `$ docker run -dp 127.0.0.1:3000:3000 \
   --rm \
