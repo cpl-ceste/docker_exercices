@@ -25,6 +25,7 @@ Crearemos una imagen a partir de este contenedor. veremos que para ello se usa e
 2) Copiamos los ficheros de nuestra web y de configuracion al contenedor
 
 `$ docker cp ./static-site/index.html my-web:/usr/share/nginx/html/index.html`
+
 `$ docker cp ./static-site/images/ my-web:/usr/share/nginx/html/images`
 
 `$ docker cp ./static-site/images/foto.jpg my-web:/usr/share/nginx/html/images/foto.jpg`
@@ -33,13 +34,15 @@ Crearemos una imagen a partir de este contenedor. veremos que para ello se usa e
 
 3) Vemos la pagina web y los logs de la aplicacion
 
-4) Vemos que la nueva configuracion de los logs no ha tenido efecto. Hay que hacer un restart de nginx para que coja el nuevo formato. Para ello podemos entrar al contendor y hacer un restart del servicio, o tambien podemos parar y rearrancar el contenedor que es mas sencillo.
+Vemos en el navegador la nueva aplicacion web (si no se ve resetear la descarga con CRTL-F5, para evitar la cache del navegador). 
+
+Vemos que la nueva configuracion de los logs no ha tenido efecto. Hay que hacer un restart de nginx para que coja el nuevo formato. Para ello podemos entrar al contendor y hacer un restart del servicio, o tambien podemos parar y rearrancar el contenedor que es mas sencillo.
 
 4) Crear una imagen a partir de este contendor
 
 `$ docker commit my-web my-web-app:v0`
 
-Puede ser conveniente parar el contenedor para construir la imagen para evitar cualquier modificacion en el momento de la creacion. No obstante esta es la accion por defecto del comando `commit`, puesto que al crear la imagen el contenedor se para momentaneamente (a no ser que se especifique lo contrario en la instruccion `docker commit`)
+Puede ser conveniente parar el contenedor mientrar construimos la imagen para evitar cualquier modificacion del contenedor en el momento de la creacion de la imagen. No obstante esta es la accion por defecto del comando `commit`, puesto que al crear la imagen el contenedor se para momentaneamente (a no ser que se especifique lo contrario en la instruccion `docker commit`)
 
 5) Comprobamos que tenemos una nueva imagen en nuestra coleccion de imagenes locales, en Docker Desktop o VStudio Code
 
@@ -53,9 +56,9 @@ Puede ser conveniente parar el contenedor para construir la imagen para evitar c
 
 Es importante tener en cuenta que **los commits no incluyen ningún dato contenido en volúmenes montados**. Solo incluyen los cambios hechos dentro del sistema de ficheros interno del contenedor o cualquier cambio en la configuracion del mismo.
 
-Si intentamos crear una nueva imagen desde un contenedor en ejecución y hemos montado volúmenes en ese contenedor, los cambios realizados dentro de esos volúmenes no se capturarán mediante el comando `commit`. El comando `docker commit` solo captura los cambios en el sistema de archivos realizados dentro del propio contenedor, no los cambios realizados en los volúmenes montados.
+Si intentamos crear una nueva imagen desde un contenedor en ejecución y hemos montado volúmenes locales en ese contenedor (`bind mount`), los cambios realizados dentro de esos volúmenes no se capturarán mediante el comando `commit`. El comando `docker commit` solo captura los cambios en el sistema de archivos realizados dentro del propio contenedor, no los cambios realizados en los volúmenes montados. De forma que si se copiamos archivos en un volumen montado, esos cambios se propagan a los volumenes montados durante la ejecucion del contenedor, pero no se incluyen en el la nueva imagen.
 
-Los cambios realizados con `docker cp` se consideran parte del sistema de archivos del contenedor y se capturan mediante `docker commit`. De forma que si se copiamos archivos en un volumen montado, esos cambios se propagan a los volumenes montados y se incluyen en el la nueva imagen.
+Los cambios realizados con `docker cp` se consideran parte del sistema de archivos del contenedor y se capturan mediante `docker commit`. De forma que si se copiamos archivos o los modificamos dentro del contenedor, esos cambios se propagan a los volumenes montados y se incluyen en la nueva imagen.
 
 Vamos a probarlo:
 
@@ -73,7 +76,7 @@ Vamos a probarlo:
 
 4) No eliminamos el contendor anterior de momento y ejecutamos ahora uno nuevo en otro puerto a partir de la imagen que hemos creado.
 
-`$ docker run -dp 8081:80 --name my-web1 my-web-app:v1`
+`$ docker run -dp 8085:80 --name my-web1 my-web-app:v1`
 
 5) Vemos la pagina web en el navegador y los logs de la aplicacion y comprobamos que son los de la aplicacion por defecto del contenedor de nginx. Comprobamos los ficheros del contendor y vemos que no esta nuestra pagina web
 
@@ -91,17 +94,18 @@ El posible que se necesite parar el contendor para copiar el fichero de configur
 
 7) Comprobamos que el conendor tiene copiados los ficheros internamente, navegando a la web y viendo los logs
 
-7) `docker commit` no incluye los volumenes montados, pero si se han copiado en el sistema de ficheros dentro del contenedor, si lo hara. Hacemos un commit del primer contenedor y creamos una nueva imagen
+8) Hacemos el `docker commit` y creamos una nueva imagen. Este no incluye los volumenes montados, pero como se han copiado en el sistema de ficheros dentro del contenedor, ahora si que los incluira en la imagen.
 
 `$ docker commit my-web1 my-web-app:v2`
 
-8) Arrancamos un nuevo contenedor con la imagen que hemos creado
+9) Arrancamos un nuevo contenedor con la imagen que hemos creado
 
-`$ docker run -dp 8082:80 --name my-web2 my-web-app:v2`
+`$ docker run -dp 8086:80 --name my-web2 my-web-app:v2`
 
-9) Vemos la pagina web en el navegador y los logs de la aplicacion y comprobamos que son los de nuestra aplicacion web. Comprobamos los ficheros del contendor y vemos que son los de esta nuestra pagina web
+10) Vemos la pagina web en el navegador y los logs de la aplicacion y comprobamos que son los de nuestra aplicacion web. Comprobamos los ficheros del contendor y vemos que son los de esta nuestra pagina web
 
-6) Paramos y eliminamos los contenedores e imagenes creadas
+11) Paramos y eliminamos los contenedores e imagenes creadas
+
 
 ### Crear una imagen a partir de un Dockerfile
 
@@ -117,11 +121,11 @@ Creamos una aplicacion web lavantando una imagen de NGINX con un `Dockerfile` qu
 
 1) Abrimos el `Dockerfile` y vemos como vamos a construir la nueva imagen y la contruimos
 
-`$ docker build -t my-web-app:v03.`
+`$ docker build -t my-web-app:v3 .`
 
 2) Ejecutamos un nuevo contenedor creado a partir de esta imagen
 
-`$ docker run -dp 8082:80 --name my-web3 my-web-app:v3`
+`$ docker run -dp 8088:80 --name my-web3 my-web-app:v3`
 
 3) Vemos la pagina web en el navegador y los logs de la aplicacion y comprobamos que son los de nuestra aplicacion web. Comprobamos los ficheros del contendor y vemos que no esta nuestra pagina web
 
