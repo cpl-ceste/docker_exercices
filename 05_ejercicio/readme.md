@@ -172,7 +172,7 @@ Analizamos como se ha construido la imagen e inspeccionamos los contenedores
 
 Para instalarlo podemos abrir una terminal en el contenedor de `ollamadeepseek` y ejecutar un comando `ollama run gemma3:1b ` para bajarnos un modelo pequeñito, que será mas rapido.
 
-Estos cambios desapareceran si borramos el contenedor y para hacerlos persistentes en realidad podemos incluirlos en el fichero `entrypoint.sh`, pero para verlo de forma rápida modificando el contenedor nos bastará.
+Estos cambios desapareceran si borramos el contenedor y para hacerlos persistentes en realidad podemos incluirlos en el `Dockerfile`o en el fichero `entrypoint.sh`, pero para verlo de forma rápida modificando el contenedor nos bastará.
 
 Probamos nuestra aplicación web (si no reconoce el nuevo modelo de forma dinamica podemos reiniciarla) y vemos que podemos abrir varios chats con cada modelo.
 
