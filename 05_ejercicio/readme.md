@@ -152,7 +152,7 @@ Utilizaremos:
 
 1- **Ollama**: [Ollama](https://ollama.com/) es una herramienta que permite ejecutar modelos de inteligencia artificial de lenguaje grande (LLMs) de forma local en tu ordenador, sin necesidad de conexión a internet. Esto garantiza que todos los datos y procesos se mantengan en tu dispositivo, ofreciendo mayor privacidad y control. Ollama facilita la instalación y uso de diversos modelos open-source de IA  (LLAMA-3, DeepSeek-R1, Gemma 3, etc).
 
-2. **WebUI**: [​Open WebUI](https://openwebui.com/) es una plataforma de inteligencia artificial autoalojada, extensible y fácil de usar, diseñada para operar completamente sin conexión a internet. Permite a los usuarios ejecutar y gestionar modelos de lenguaje de gran tamaño (LLMs) localmente a través de una interfaz web intuitiva. Permite integrarse con Ollama y APIs compatibles de modelos (i.e. OpenAI), puede ejecutarse sobre CPU y GPU (cuda) y tiene otras muchas funcionalidades (motor para RAG, etc.)
+2- **WebUI**: [​Open WebUI](https://openwebui.com/) es una plataforma de inteligencia artificial autoalojada, extensible y fácil de usar, diseñada para operar completamente sin conexión a internet. Permite a los usuarios ejecutar y gestionar modelos de lenguaje de gran tamaño (LLMs) localmente a través de una interfaz web intuitiva. Permite integrarse con Ollama y APIs compatibles de modelos (i.e. OpenAI), puede ejecutarse sobre CPU y GPU (cuda) y tiene otras muchas funcionalidades (motor para RAG, etc.)
 
 1)  Navegamos al directorio `/web-ai` y abrimos el fichero `docker-compose.yaml` o el fichero `docker-compose-cpu-based.yml`
 
@@ -186,7 +186,7 @@ Probamos nuestra aplicación web (si no reconoce el nuevo modelo de forma dinami
 
 `$ docker compose logs <service>`
 
-3) Ejecutamos el comando para borrar los contenedores y borramos redes y volumenes que queden sin borrar
+7) Ejecutamos el comando para borrar los contenedores y borramos redes y volumenes que queden sin borrar
 
 `$ docker compose down`
 
