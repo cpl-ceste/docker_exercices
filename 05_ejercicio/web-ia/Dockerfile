@@ -1,6 +1,5 @@
 # FROM ollama/ollama
 
-
 # Use a base image with CUDA support if using GPU, otherwise use Ubuntu
 FROM ubuntu:22.04
 
