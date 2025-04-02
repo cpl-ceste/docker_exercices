@@ -6,7 +6,7 @@ Documentacion de referencia [Docker Docs](https://docs.docker.com/)
 
 Docker permite que cuando se ejecuta un contenedor se puedan mapear volumenes de datos en los que el contenedor persiste los datos para que esten disponibles si se ejecuta de nuevo [Volumenes](https://docs.docker.com/storage/volumes/)
 
-Creamos una aplicacion web lavantando una imagen de NGINX.
+Creamos una aplicacion web levantando una imagen de NGINX.
 
 0) Navegamos al directorio `ngnix`
 
@@ -16,8 +16,12 @@ Creamos una aplicacion web lavantando una imagen de NGINX.
 
 2) Abrir el navegador para ver la aplicacion
 
-3) Para personalizar la aplicacion web, hay dos ficheros importantes: el index.html de nuestra aplicacion y el fichero de configuracion del servidor. Vamos a inspeccionarlos en los directorios del contenedor:
+3) Para personalizar la aplicacion web, hay dos ficheros importantes: el `index.html` de nuestra aplicacion y el fichero de configuracion del servidor `nginx.conf`. 
+
+Vamos a inspeccionarlos en los directorios del contenedor:
+
 - /usr/share/nginx/html
+
 - /etc/nginx/nginx.conf 
 
 ### Volumenes sin nombre
