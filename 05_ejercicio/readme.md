@@ -162,7 +162,7 @@ Analizamos las imagenes que usa cada uno de los servicios. Una de las imagenes v
 
 2) Levantamos la aplicacion en modo dettached, indicando que debe de construir la imagen en el despliegue y el fichero `yaml` que describe el despleigue.
 
-Ejecutamos el comando para desplegarlo para que corra sobre GPU `$ docker compose -f docker-compose.yaml up -d --build`
+Ejecutamos el comando para desplegarlo para que corra sobre GPU `$ docker compose -f docker-compose.yml up -d --build`
 
 Analizamos como se ha construido la imagen e inspeccionamos los contenedores
 
