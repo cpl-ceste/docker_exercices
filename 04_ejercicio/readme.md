@@ -2,6 +2,27 @@
 
 Documentacion de referencia [Docker Docs](https://docs.docker.com/)
 
+## Guardar imagenes y contenedores en ficheros
+
+Podemos guardar imagenes en ficheros de forma local y distribuirlas manualmente. Tambien podemos exportar contenedores a ficheros.
+
+
+Posteriormente estos ficheros pueden cargarse en `Docker Engine`
+
+### Guardar y cargar imagenes
+
+1) Podemos probar a guardar una imagen `docker save -o images.tar nginx`
+
+2) Podemos guardar todas las que tenemos en local en un mismo fichero `docker save -o images2.tar $(docker images -q)` . El flag `-q` lista de forma `quiet` las imagenes
+
+3) Cargar una imagen `docker load -i images.tar`
+
+### Guardar un contenedor y cargarlo
+
+1) Podemos exportar un contenedor  `docker export container.tar <container_name>`
+
+2) Importarlo de nuevo docker `import myimage:latest container.tar`
+
 ## Publicar imágenes
 
 Las imágenes creadas se almacenan en local y podemos publicarlas en un registro publico o privado para compartirlas dentro de nuestra organizacion.
