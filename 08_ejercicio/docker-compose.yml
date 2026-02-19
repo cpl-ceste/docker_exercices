@@ -1,0 +1,75 @@
+services:
+  # Servicio 1: Wazuh Indexer (Base de datos / Motor de búsqueda)
+  # RETO: Esta base de datos NO debe ser accesible desde fuera. Solo red interna.
+  wazuh.indexer:
+    image: wazuh/wazuh-indexer:4.7.2
+    container_name: wazuh-indexer
+    ports:
+      - "9200:9200" # Exponer solo si es necesario para debug, idealmente quitar en prod
+    environment:
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # Control de memoria Java
+      - "discovery.type=single-node"
+    networks:
+      - wazuh-backend-net # Red aislada
+    volumes:
+      - wazuh-indexer-data:/var/lib/wazuh-indexer
+
+    # LÍMITES DE RECURSOS (Resource Limits)
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G # Indexer es pesado, pero limitamos para no ahogar el host
+
+  # Servicio 2: Wazuh Manager (El cerebro del SIEM)
+  wazuh.manager:
+    image: wazuh/wazuh-manager:4.7.2
+    container_name: wazuh-manager
+    ports:
+      - "1514:1514" # Puerto para agentes
+      - "55000:55000" # API
+    environment:
+      - INDEXER_URL=https://wazuh-indexer:9200
+      - INDEXER_USERNAME=admin
+      - INDEXER_PASSWORD=admin
+    networks:
+      - wazuh-backend-net # Habla con Indexer
+      - wazuh-agent-net # Habla con agentes externos
+    depends_on:
+      - wazuh.indexer
+    volumes:
+      - wazuh-manager-data:/var/ossec/data
+
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  # Servicio 3: Wazuh Dashboard (Interfaz Web - Kibana/OpenSearch Dashboards)
+  # RETO: Este es el único punto de entrada HTTP para el analista.
+  wazuh.dashboard:
+    image: wazuh/wazuh-dashboard:4.7.2
+    container_name: wazuh-dashboard
+    ports:
+      - "443:5601" # Exponemos en puerto HTTPS estándar
+    environment:
+      - INDEXER_URL=https://wazuh-indexer:9200
+      - WAZUH_API_URL=https://wazuh-manager:55000
+    networks:
+      - wazuh-backend-net # Habla con Indexer/Manager
+      - wazuh-public-net # Acceso del usuario
+    depends_on:
+      - wazuh.indexer
+      - wazuh.manager
+
+# DEFINICIÓN DE REDES SEGMENTADAS
+networks:
+  wazuh-backend-net:
+    internal: true # Esta red NO tiene salida a internet ni entrada directa (aislamiento total)
+  wazuh-agent-net:
+    driver: bridge # Red para recibir logs de agentes
+  wazuh-public-net:
+    driver: bridge # Red para acceso web
+
+volumes:
+  wazuh-indexer-data:
+  wazuh-manager-data:
