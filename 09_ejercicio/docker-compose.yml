@@ -1,0 +1,110 @@
+services:
+  # https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/prometheus-config-examples/docker-compose-linux/
+  # Servicio 1: Prometheus
+  # Recolecta métricas cada X segundos definidos en prometheus.yml
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_server
+    restart: unless-stopped
+    # Seguridad: Ejecutar como usuario nobody (ID 65534) si la imagen lo soporta, 
+    # aunque la oficial de prometheus ya corre como 'nobody' por defecto.
+    user: "65534:65534"
+    volumes:
+      # ConfigMap simulado: Montamos el fichero de configuración como solo lectura
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      # Persistencia: No perder datos si el contenedor muere
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle' # Permite recargar config con API call
+    ports:
+      - "9090:9090"
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - monitoring_net
+
+    # LÍMITES DE RECURSOS (Hardening)
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # Servicio 2: Node Exporter (El Sensor del Host)
+  # RETO DE SEGURIDAD: Necesita acceso al Host, pero debemos dárselo con cirugía.
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: host_monitor
+    restart: unless-stopped
+    # CAPABILITIES: no necesita ser root en el contenedor si tiene acceso a los ficheros del host
+    cap_drop:
+      - ALL
+
+    # ACCESO AL HOST (No es necesario para que funcione, porque se mapea la info de los volumenes. Pero si es necesario si se quieren metricas de red 100% exactas)
+    #pid: host # Para ver procesos del host
+    #network_mode: host # Para ver estadísticas de red reales del host (OJO: No usa la red del compose)
+    expose:
+      - 9100
+    networks:
+      - monitoring_net
+    volumes:
+      # Montajes de Solo Lectura (:ro) CRITICOS para no permitir escritura en el host
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+
+    # Nota: Al usar network_mode: host, no necesita 'ports' ni 'networks' definidos aquí.
+    # Se accede via localhost:9100. Prometheus (en container) deberá acceder a él 
+    # usando la IP del gateway o el nombre de host si se configura extra_hosts, 
+    # pero como Prometheus está en red bridge y node-exporter en host, 
+    # Prometheus debe apuntar a la IP del host (host.docker.internal en Desktop o IP real en Linux).
+    # TRUCO: En entornos Linux puros, a veces es mejor meter a Prometheus en host mode también, 
+    # o usar 'extra_hosts'. Para este ejercicio, asumiremos que network_mode: host permite 
+    # que escuche en todas las interfaces del host.
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 64M
+
+  # Servicio 3: Grafana (El Dashboard)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_dashboard
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring_net
+    # Seguridad: Credenciales vía variables de entorno (no hardcoded)
+    env_file:
+      - .env
+    volumes:
+      # Persistencia de Dashboards y Usuarios
+      - grafana_data:/var/lib/grafana
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  prometheus_data:
+  grafana_data:
+
+
+networks:
+  monitoring_net:
+    driver: bridge
