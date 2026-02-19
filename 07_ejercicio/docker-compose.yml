@@ -1,0 +1,89 @@
+#https://github.com/upmcplanetracker/test-suricata/blob/main/docker-compose.yml
+services:
+  # Servicio 1: Suricata IDS
+  # Reto de Seguridad: Suricata necesita privilegios de red para inspeccionar paquetes,
+  # pero no debemos darle 'privileged: true' completo.
+  suricata:
+    image: jasonish/suricata:latest
+    container_name: suricata_test
+    # Reiniciar siempre si falla (https://github.com/compose-spec/compose-spec/blob/main/spec.md#restart)
+    restart: unless-stopped
+    # Red: Host mode es lo ideal para IDS real, pero en este ejercicio aislamos 
+    # en una red interna para minimizar riesgos y enfocarnos en hardening    
+    #network_mode: "host"
+    networks:
+      - traffic_net
+    # HARDENING CRÍTICO: CAPABILITIES
+    # En lugar de usar 'privileged: true' (que da root total al host),
+    # solo añadimos las capacidades específicas que necesita un IDS.      
+    cap_add:
+      - NET_ADMIN # Para configurar interfaces de red
+      - NET_RAW # Para capturar paquetes crudos
+      - SYS_NICE # Para priorizar procesos en tiempo real
+
+    # LÍMITES DE RECURSOS (Resource Limits)
+    # Evita que el IDS consuma toda la CPU/RAM ante un ataque DoS
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+    # VOLUMENES                  
+    volumes:
+      - suricata-logs:/var/log/suricata
+      - suricata-rules:/var/lib/suricata
+      - suricata-config:/etc/suricata
+    # !!! YOU MUST CHANGE 'eno1' to your NUC's interface name !!!
+    command: -i eth0
+
+  # Servicio 2: EveBox (Visualizador de Alertas)
+  # Este contenedor debe ser lo más restringido posible, ya que expone una web.
+  evebox:
+    image: jasonish/evebox:latest
+    container_name: evebox_ui
+    restart: unless-stopped
+    ports:
+      - "5636:5636"
+
+    # EveBox solo necesita leer los logs, no debe tener permisos de red especiales
+    cap_drop:
+      - ALL
+
+    # Sistema de archivos de solo lectura para evitar persistencia de malware
+    read_only: true
+
+    networks:
+      - traffic_net
+    volumes:
+      - suricata-logs:/var/log/suricata:ro
+      - evebox-data:/var/lib/evebox
+    command: >
+      evebox server --datastore sqlite --data-directory /var/lib/evebox --input /var/log/suricata/eve.json
+
+  # Servicio 3: Traffic Generator (Simulación de víctima/atacante)
+  # Genera tráfico simple para que Suricata tenga algo que ver
+  bad_actor:
+    image: alpine
+    container_name: malicious_actor
+    networks:
+      - traffic_net
+    command: sh -c "apk add --no-cache curl && while true; do curl -A 'BlackSun' http://google.com; sleep 5; done"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 64M
+
+networks:
+  traffic_net:
+    driver: bridge
+
+volumes:
+  suricata-logs:
+  suricata-rules:
+  suricata-config:
+  evebox-data:
