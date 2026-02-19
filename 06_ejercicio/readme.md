@@ -1,4 +1,4 @@
-# EJERCICIO 5 - DOCKER COMPOSE
+# EJERCICIO 6 - DOCKER COMPOSE
 
 Documentacion de referencia:
 - [Docker Docs](https://docs.docker.com/)
