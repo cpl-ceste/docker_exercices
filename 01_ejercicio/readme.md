@@ -58,6 +58,8 @@ Crearemos un contenedor con la imagen de la aplicacion welcome-to-docker
 
 `$ docker ps (-a)`
 
+`$ docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"`
+
 `$ docker inspect <name> (or <container id>)`
 
 `$ docker cp FILE_HOST <container_name_or_ID>:FILE_CONTAINER`
