@@ -73,7 +73,7 @@ Creamos una aplicacion web lavantando una imagen de NGINX.
 
 NOTA IMPORTANTE: si le damos por equivocacion el nombre de un dir en el host o en el contenedor que no existen los creara vacios y no dara error. No despistarse, porque a veces nos equivocamos al escribir la rutas y los contenidos mapeados no coinciden con lo que pensamos. El comando `mount` no crea automaticamente estos directorios y por seguridad simplemente da un error.
 
-2) en este caso vemos que no hay volumenes en DOCKER. Inspeccionamos el volumen y vemos que no se han mapeado todos los contenidos del directorio del contenedor al volumen en nuestro host. 
+2) en este caso vemos que no hay volumenes en DOCKER. Inspeccionamos el volumen y vemos que se ha mapeado el contenido del directorio vacio del contenedor al volumen en nuestro host. Comprobamos que montar un directorio local, enmascara los contenidos del contenedor.
 
 3) Navegamos a la aplicacion web y vemos que no hay `index.html` para mostrar por defecto. Vemos en los logs del contenedor un `403 forbidden` y en el dir del contenedor `/usr/share/nginx/html` se ha mapeado el directorio vacio de nuestro host
 
@@ -128,6 +128,8 @@ Crearemos un contenedor con DBMS de MySQL.
 3) Corremos un contendor de MySQL con un mapeo de volumen, de forma que los datos de la base de datos se guarden en un dir local `data`. No hace falta que creemos el dir local, lo creara el contenedor cuando haga el mapeo.
 
 `$ docker run -v $(pwd)/data:/var/lib/mysql -p 3306:3306 --name some-mysql -e MYSQL_ROOT_PASSWORD=1234 -d mysql`
+
+NOTA IMPORTANTE: Como en el caso anterior, mapeamos un directorio vacio local con una carpeta del contenedor y el contenido del directorio local enmascara el directorio del contenedor, dejando vacio el directorio `/var/lib/mysql`. Sin embargo la imagen de MySQL incluye lógica de inicialización que detecta si `/var/lib/mysql` está vacío, si está vacío, inicializa una nueva base de datos, escribe las tablas y archivos del sistema en ese directorio que esta sincronizado con el directorio local. Así que vemos que hay imagenes, como La imagen de MySQL, que inicializan activamente el directorio montado y otras, como la imagen de nginx del caso anterior, no hacen nada.
 
 3) Vemos que el contenedor no logra arrancar, vemos los logs. Hay un problema de permisos para crear la base de datos en el dir local
 
