@@ -177,6 +177,8 @@ Podemos ver la direccion IP del contenedor con el comando:
 
 `$ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' some-server`
 
+NOTA IMPORTANTE: cuando se levanta un contenedor en la red por defecto de tipo `bridge` puede comunicarse con otros contenedores en la misma red direccionandolos por sus direcciones IP, pero no con los nombres de contenedor. Esto solo puede hacerse si la red esta definida por el usuario (no es la de por defecto)
+
 4) Levantamos otro contenedor de MySQL que ejecuta el comando de cliente `mysql` para conectarse al contenedor servidor.
 
 - prueba que puedes conectarte con la direccion IP en `<poner la IP>`
