@@ -1,4 +1,4 @@
-# Ejercicio 16: Interacción Nativa y Web con Docker Model Runner
+# Ejercicio 8: Interacción Nativa y Web con Docker Model Runner
 
 ## Descripción del Problema
 En este ejercicio vamos a explorar la nueva capacidad nativa de Docker Desktop para ejecutar modelos de Inteligencia Artificial locales (Docker Model Runner o DMR). Vamos a realizar una prueba de concepto en dos fases:
