@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui-dmr
+    ports:
+      - "3000:8080"
+    environment:
+      # Apunta a la API nativa de Docker Model Runner que escucha localmente en el tcp 12434
+      - OLLAMA_BASE_URL=http://host.docker.internal:12434
+      # Se desactiva el login y sistema gestor de cuentas para una demo P2P ligera.
+      - WEBUI_AUTH=false
+    extra_hosts:
+      # Regla vital de enrutamiento: Resuelve la dirección mágica `host.docker.internal` al 
+      # gateway de red nativo logrando conectar con el host de Docker Desktop desde la subnet bridge compartida
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - open-webui-data:/app/backend/data
+
+volumes:
+  open-webui-data:
