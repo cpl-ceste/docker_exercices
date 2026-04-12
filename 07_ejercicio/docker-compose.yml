@@ -1,0 +1,132 @@
+services:
+  # Servicio 1: Prometheus
+  # Recolecta métricas conjuntas
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_server
+    restart: unless-stopped
+    user: "65534:65534"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/rules.yml:/etc/prometheus/rules.yml:ro
+      - prometheus_data:/prometheus
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "100m"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    ports:
+      - "9090:9090"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - monitoring_net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # Servicio 2: Node Exporter (El Sensor Físico/Host)
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: host_monitor
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    expose:
+      - 9100
+    networks:
+      - monitoring_net
+    volumes:
+      # Montajes Restringidos
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 64M
+
+  # Servicio 3: cAdvisor (Monitoreo de Contenedores Activos)
+  # https://medium.com/@sohammohite/docker-container-monitoring-with-cadvisor-prometheus-and-grafana-using-docker-compose-b47ec78efbc
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1 #tambien puede usarse latest
+    container_name: cadvisor_monitor
+    restart: unless-stopped
+    # No mapeamos el puerto 8080 al host por seguridad. Solo se accede a traves de la red interna.
+    ports:
+      - "8080:8080"
+    networks:
+      - monitoring_net
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - /proc:/host/proc:rodocker
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 256M
+
+  # Servicio 4: Grafana (Dashboard)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_dashboard
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring_net
+    env_file:
+      - .env
+    volumes:
+      - grafana_data:/var/lib/grafana
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # Servicio 5: AlertManager
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    restart: unless-stopped
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    networks:
+      - monitoring_net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 64M
+
+volumes:
+  prometheus_data:
+  grafana_data:
+
+
+networks:
+  monitoring_net:
+    driver: bridge

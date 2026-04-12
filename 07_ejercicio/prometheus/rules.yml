@@ -1,0 +1,11 @@
+groups:
+- name: ejemplos-alertas
+  rules:
+  - alert: InstanciaCaida
+    expr: up == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Instancia {{ $labels.instance }} caída"
+      description: "El objetivo {{ $labels.instance }} del job {{ $labels.job }} ha estado inalcanzable durante más de 1 minuto."
