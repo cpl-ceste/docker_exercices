@@ -1,4 +1,4 @@
-# Ejercicio 17: Observabilidad Completa (Host + Contenedores) con Node Exporter y cAdvisor
+# Ejercicio 7: Observabilidad Completa (Host + Contenedores) con Node Exporter y cAdvisor
 
 ## Contexto Operativo
 En infraestructuras de IT, la **Visibilidad** es el primer paso para garantizar la seguridad y la continuidad del servicio. Un sistema que no se monitoriza es un sistema comprometido en potencia.
