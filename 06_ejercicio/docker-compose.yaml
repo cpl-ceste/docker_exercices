@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # Servicio de Base de Datos
+  db:
+    image: mysql:8.0
+    restart: always # La base de datos es robusta, siempre debe levantarse
+    environment:
+      # Credenciales requeridas por defecto por el perfil 'mysql' de Spring PetClinic
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: petclinic
+      MYSQL_USER: petclinic
+      MYSQL_PASSWORD: petclinic
+    ports:
+      # Exponemos el puerto de la BBDD al host para poder administrarla
+      # con herramientas como DBeaver DataGrip o MySQL Workbench desde nuestro ordenador
+      - "3306:3306"
+    volumes:
+      # Volumen nombrado para garantizar la persistencia de datos 
+      # entre reinicios y destrucciones del contenedor
+      - db_data:/var/lib/mysql
+
+  # Servicio de la Aplicación en Modo Desarrollo
+  web:
+    image: eclipse-temurin:17-jdk-jammy # Imagen base que incluye el JDK completo
+    working_dir: /app
+    ports:
+      # Puerto por defecto donde el servidor embebido (Tomcat) de Spring Boot escucha
+      - "8080:8080"
+    volumes:
+      # (Bind mount) Mapea todo el código fuente actual al interior del contenedor
+      - .:/app
+      # Volumen para cachear las dependencias de Maven. Acelera arranques posteriores.
+      - maven_cache:/root/.m2
+    # El comando lanza la aplicación en el contenedor invocando a Maven
+    # Además inyecta la propiedad para activar el perfil de mysql
+    command: ./mvnw spring-boot:run -Dspring-boot.run.profiles=mysql
+    depends_on:
+      # Asegura que el servicio web se lance después del de MySQL
+      - db
+    environment:
+      # Instruye al contenedor web que se conecte a la db instanciada en el servicio de arriba
+      # IMPORTANTE: Utilizar 'db' como el host, dado por el DNS interno de Docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/petclinic
+      SPRING_DATASOURCE_USERNAME: petclinic
+      SPRING_DATASOURCE_PASSWORD: petclinic
+
+volumes:
+  # Declaración de los volúmenes nombrados a nivel base
+  db_data:
+  maven_cache:
