@@ -16,7 +16,7 @@ En este ejercicio resolvemos el reto técnico de configurar un entorno de desarr
 ```bash
 git clone https://github.com/spring-projects/spring-petclinic.git```
 
-**NOTA IMPORTANTE**: Poner el fichero `docker-compose.yaml` dentro del directorio `spring-petclinic` que se habra creado despues de hacer el pull del repo y ejecutar `docker compose desde este directorio `spring-petclinic` para que el mapeo de volumenes sea correcto y arranque bien la aplicacion web de Spring Boot. 
+**NOTA IMPORTANTE**: Poner el fichero `docker-compose.yaml` dentro del directorio `spring-petclinic` que se habra creado despues de hacer el pull del repo y ejecutar `docker compose` desde este directorio `spring-petclinic` para que el mapeo de volumenes sea correcto y arranque bien la aplicacion web de Spring Boot. 
 
 
 ## Test de Verificación
